@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from datetime import datetime 
 import io
+import json
 from typing import Any
 from deephaven.plugin.object_type import MessageStream, BidirectionalObjectType
 
 from .deephaven_plugin_hackathon_object import DeephavenPluginHackathonObject
+
 
 # Create a custom message stream to send messages to the client
 
@@ -24,6 +27,7 @@ class DeephavenPluginHackathonMessageStream(MessageStream):
         self._client_connection.on_data(b"", [])
 
         obj._set_connection(self)
+        self._obj = obj
 
     def send_message(self, message: str) -> None:
         """
@@ -49,7 +53,14 @@ class DeephavenPluginHackathonMessageStream(MessageStream):
         # This is just an acknowledgement that the payload was received,
         # so print.
         payload = io.BytesIO(payload).read().decode()
-        print(f"Received payload: {payload}")
+        print(f"Received json: {payload}")
+
+        data = json.loads(payload)
+        if data["action"] == "ip_set":
+            self._obj.set_ip(data["payload"])
+        if data["action"] == "marker_set":
+            self._obj.set_marker(data["payload"])
+             
 
     def on_close(self) -> None:
         """

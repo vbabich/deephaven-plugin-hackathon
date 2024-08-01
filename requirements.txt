@@ -1,4 +1,5 @@
 build
+ipinfo
 pip
 pre-commit
 setuptools
