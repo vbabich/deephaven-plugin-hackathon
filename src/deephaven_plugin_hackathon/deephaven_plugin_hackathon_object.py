@@ -1,18 +1,17 @@
+import os
 from __future__ import annotations
 from datetime import datetime
+from dotenv import load_dotenv
 from tzfpy import get_tz
 from typing import Callable
 import json
 import pytz
 import ipinfo
-import os
-from dotenv import load_dotenv
 
 from deephaven.plugin.object_type import MessageStream
 
 load_dotenv()
 
-# TODO: use external file for access token
 access_token = os.getenv("IPINFO_ACCESS_TOKEN")
 
 def get_payload_from_ip(ip: str, notify: bool|None = False) -> dict[str, float]:
@@ -54,21 +53,6 @@ class DeephavenPluginHackathonObject:
     def __init__(self, on_change: Callable[[str], None] | None = None):
         self._connection: MessageStream = None
         self._on_change = on_change
-
-    def play(self, url: str) -> None:
-        """
-        Play an audio on the client
-
-        Args:
-            message: The url of the audio to play
-        """
-        if self._connection:
-            data = {
-                "action": "play",
-                "payload": url
-            }
-            message = json.dumps(data)
-            self._connection.send_message(message)
 
     def _set_connection(self, connection: MessageStream) -> None:
         """

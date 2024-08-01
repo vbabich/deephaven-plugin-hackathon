@@ -1,6 +1,10 @@
 build
 ipinfo
+dotenv
+json
 pip
+pytz
 pre-commit
 setuptools
 tox
+tzfpy
